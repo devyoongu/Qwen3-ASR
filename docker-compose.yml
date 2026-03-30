@@ -7,14 +7,16 @@ services:
       - NVIDIA_VISIBLE_DEVICES=0
     volumes:
       - /home/posicube/.cache/huggingface/hub:/app/models
+      - /home/posicube/stt/Qwen3-ASR:/app/src
     ports:
       - "30000:30000"
-    # 'python -m'이 아니라 등록된 전용 명령어를 직접 호출해야 합니다.
+    # 소스코드를 마운트해 컨테이너 시작 시 패키지를 재설치한 뒤 서버를 실행합니다.
     command: >
-      qwen-asr-serve-async
-      --asr-model-path /app/models
-      --host 0.0.0.0
-      --port 30000
+      bash -c "pip install -e /app/src --no-deps --quiet &&
+               qwen-asr-serve-async
+               --asr-model-path /app/models
+               --host 0.0.0.0
+               --port 30000"
     deploy:
       resources:
         reservations:
