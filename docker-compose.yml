@@ -1,0 +1,24 @@
+services:
+  qwen3-asr-streaming:
+    image: qwenllm/qwen3-asr:latest
+    container_name: qwen3-asr-streaming
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+    volumes:
+      - /home/posicube/.cache/huggingface/hub:/app/models
+    ports:
+      - "30000:30000"
+    # 'python -m'이 아니라 등록된 전용 명령어를 직접 호출해야 합니다.
+    command: >
+      qwen-asr-demo-streaming
+      --asr-model-path /app/models
+      --host 0.0.0.0
+      --port 30000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
