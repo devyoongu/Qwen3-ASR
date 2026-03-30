@@ -36,6 +36,8 @@ dependencies = [
 [project.optional-dependencies]
 vllm = [
   "vllm==0.14.0",
+  "fastapi",
+  "uvicorn[standard]",
 ]
 
 [project.urls]
@@ -46,6 +48,7 @@ Repository = "https://github.com/Qwen/Qwen3-ASR"
 qwen-asr-demo = "qwen_asr.cli.demo:main"
 qwen-asr-demo-streaming = "qwen_asr.cli.demo_streaming:main"
 qwen-asr-serve = "qwen_asr.cli.serve:main"
+qwen-asr-serve-async = "qwen_asr.cli.serve_async:main"
 
 [tool.setuptools]
 packages = { find = { where = ["."] , include = ["qwen_asr*"] } }
