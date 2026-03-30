@@ -14,31 +14,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Examples for Qwen3ASRModel Streaming Inference (vLLM backend).
+Examples for Qwen3ASRModel Streaming Inference (REST API).
 
 Note:
-  Requires vLLM extra:
-    pip install qwen-asr[vllm]
+  Requires a running ASR server at SERVER_URL.
 """
 
 import io
-import urllib.request
+import os
+import time
 from typing import Tuple
 
 import numpy as np
+import requests
 import soundfile as sf
 
-from qwen_asr import Qwen3ASRModel
+
+SERVER_URL = "http://172.31.79.202:30000"
+LOCAL_WAV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "wav", "google_tts.wav")
 
 
-ASR_MODEL_PATH = "Qwen/Qwen3-ASR-1.7B"
-URL_EN = "https://qianwen-res.oss-cn-beijing.aliyuncs.com/Qwen3-ASR-Repo/asr_en.wav"
-
-
-def _download_audio_bytes(url: str, timeout: int = 30) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read()
+def _load_audio_bytes(path: str) -> bytes:
+    with open(path, "rb") as f:
+        return f.read()
 
 
 def _read_wav_from_bytes(audio_bytes: bytes) -> Tuple[np.ndarray, int]:
@@ -61,44 +59,64 @@ def _resample_to_16k(wav: np.ndarray, sr: int) -> np.ndarray:
     return np.interp(x_new, x_old, wav).astype(np.float32)
 
 
-def run_streaming_case(asr: Qwen3ASRModel, wav16k: np.ndarray, step_ms: int) -> None:
+def run_streaming_case(wav16k: np.ndarray, step_ms: int) -> None:
     sr = 16000
     step = int(round(step_ms / 1000.0 * sr))
 
     print(f"\n===== streaming step = {step_ms} ms =====")
-    state = asr.init_streaming_state(
-        unfixed_chunk_num=2,
-        unfixed_token_num=5,
-        chunk_size_sec=2.0,
-    )
 
+    # 1. 세션 시작
+    start_res = requests.post(f"{SERVER_URL}/api/start")
+    start_res.raise_for_status()
+    session_id = start_res.json()["session_id"]
+    print(f"session_id={session_id!r}")
+
+    # 2. 청크 전송
     pos = 0
     call_id = 0
+    first_text_latency: float | None = None
+    stream_start = time.perf_counter()
+
     while pos < wav16k.shape[0]:
         seg = wav16k[pos : pos + step]
         pos += seg.shape[0]
         call_id += 1
-        asr.streaming_transcribe(seg, state)
-        print(f"[call {call_id:03d}] language={state.language!r} text={state.text!r}")
 
-    asr.finish_streaming_transcribe(state)
-    print(f"[final] language={state.language!r} text={state.text!r}")
+        response = requests.post(
+            f"{SERVER_URL}/api/chunk",
+            params={"session_id": session_id},
+            headers={"Content-Type": "application/octet-stream"},
+            data=seg.tobytes(),
+        )
+        response.raise_for_status()
+        res_json = response.json()
+        language = res_json.get('language')
+        text = res_json.get('text', '').replace('\ufffd', '').strip()
+
+        if text and first_text_latency is None:
+            first_text_latency = time.perf_counter() - stream_start
+
+        print(f"[call {call_id:03d}] language={language!r} text={text!r}")
+
+    if first_text_latency is not None:
+        print(f"[latency] 최초 텍스트 응답: {first_text_latency:.3f}s")
+
+    # 3. 최종 결과
+    finish_res = requests.post(f"{SERVER_URL}/api/finish", params={"session_id": session_id})
+    finish_res.raise_for_status()
+    final = finish_res.json()
+    language = final.get('language')
+    text = final.get('text', '').replace('\ufffd', '').strip()
+    print(f"[final] language={language!r} text={text!r}")
 
 
 def main() -> None:
-    # Streaming is vLLM-only and no forced aligner supported.
-    asr = Qwen3ASRModel.LLM(
-        model=ASR_MODEL_PATH,
-        gpu_memory_utilization=0.8,
-        max_new_tokens=32, # set a small value for streaming
-    )
-
-    audio_bytes = _download_audio_bytes(URL_EN)
+    audio_bytes = _load_audio_bytes(LOCAL_WAV_PATH)
     wav, sr = _read_wav_from_bytes(audio_bytes)
     wav16k = _resample_to_16k(wav, sr)
 
     for step_ms in [500, 1000, 2000, 4000]:
-        run_streaming_case(asr, wav16k, step_ms)
+        run_streaming_case(wav16k, step_ms)
 
 
 if __name__ == "__main__":
