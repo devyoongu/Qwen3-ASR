@@ -4,6 +4,43 @@
 
 ---
 
+## 배경: Ubuntu 18.04 호환성 문제와 Docker 해결
+
+서버 OS가 **Ubuntu 18.04 (glibc 2.27)** 이라 `vllm==0.14.0` 을 호스트에 직접 설치할 수 없습니다.
+vLLM 0.14.0은 **glibc 2.28 이상**을 요구하기 때문입니다.
+
+```
+# 호스트에서 직접 설치 시 발생하는 오류
+ERROR: vllm requires glibc >= 2.28
+```
+
+**해결책: Docker 사용**
+
+`qwenllm/qwen3-asr:latest` 이미지는 Ubuntu 22.04+ 기반으로 glibc 2.35를 포함하므로
+컨테이너 내부에서는 vLLM이 정상 설치·실행됩니다.
+
+이를 위해 `docker-compose.yml` 에 두 가지를 추가했습니다:
+
+```yaml
+volumes:
+  - /home/posicube/stt/Qwen3-ASR:/app/src   # 소스코드를 컨테이너에 마운트
+
+command:
+  - bash
+  - -c
+  - |
+    pip install -e /app/src --no-deps --quiet &&   # 컨테이너(Ubuntu 22.04) 안에서 패키지 재설치
+    qwen-asr-serve-async ...
+```
+
+| 역할 | 설명 |
+|------|------|
+| 볼륨 마운트 (`/app/src`) | 이미지 재빌드 없이 `git pull` 만으로 코드 변경 즉시 반영 |
+| 시작 시 `pip install -e` | 컨테이너 환경(glibc 2.35)에서 entry point 등록, vLLM 정상 동작 |
+| `--no-deps` 플래그 | 이미지에 이미 설치된 의존성을 재설치하지 않아 기동 시간 단축 |
+
+---
+
 ## 사전 요구 사항
 
 - NVIDIA GPU (VRAM 24GB 이상 권장)
