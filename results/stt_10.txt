@@ -1,0 +1,192 @@
+/Users/yglee/python/Qwen3-ASR/.venv/bin/python3.11 -X pycache_prefix=/Users/yglee/Library/Caches/JetBrains/IntelliJIdea2025.2/cpython-cache /Users/yglee/Library/Application Support/JetBrains/IntelliJIdea2025.2/plugins/python-ce/helpers/pydev/pydevd.py --multiprocess --qt-support=auto --client 127.0.0.1 --port 50417 --file /Users/yglee/python/Qwen3-ASR/examples/example_qwen3_asr_vllm_streaming_concurrent.py
+Connected to: <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 50418), raddr=('127.0.0.1', 50417)>.
+Connected to pydev debugger (build 252.28539.33)
+동시 요청 수: 10, chunk: 1000ms
+============================================================
+
+----- worker 01 | session=dca1efbabf654d0699d0482c1b5b5d4b -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시죠.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.165s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 02 | session=f4c94710b0834b1cad9edb111a0d0211 -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 됩니다.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게.'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.157s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 03 | session=f5dfae89535c47289f257c2d9fcc10af -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요. 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 됩니다.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게.'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.164s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 04 | session=22962da1ccfe4b5b8fcc8056a2ea761a -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시죠.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.163s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 05 | session=f2fad27ab216466fb8ce4b33f91931c0 -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 됩니다.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게.'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.163s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 06 | session=a6fd769d1aa64770bf71404f3b86f103 -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 됩니다.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게.'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.159s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 07 | session=86edc8cde35047b99d84dd89cc480229 -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시죠.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.161s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 08 | session=228938757f0144dd81b92fc7998fc52e -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 됩니다.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게.'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.161s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 09 | session=21e4ef2670714b9e8a4d63397bc47342 -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 됩니다.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게.'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.159s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+----- worker 10 | session=d63f351d5e2044b18a72425005581be2 -----
+  [call 001] language='Korean' text='안녕하세요.'
+  [call 002] language='Korean' text='안녕하세요 포지큐브 고객센터.'
+  [call 003] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 004] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다.'
+  [call 005] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상'
+  [call 006] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 공간.'
+  [call 007] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사가'
+  [call 008] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기하듯.'
+  [call 009] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해 주시죠.'
+  [call 010] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게'
+  [call 011] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 012] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다.'
+  [call 013] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [call 014] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+  [latency] 최초 텍스트 응답: 0.158s
+  [final] language='Korean' text='안녕하세요. 포지큐브 고객센터 AI 콜봇입니다. 보다 정확한 상담을 위해 조용한 곳에서 상담사와 이야기 하듯이 편하게 말씀해주시면 더 빠르게 도와드릴 수 있습니다. 무엇을 도와드릴까요?'
+
+============================================================
+전체 소요 시간: 1.899s
+최초 응답 latency - min: 0.157s  max: 0.165s  avg: 0.161s
+성공: 10/10  실패: 0/10
+
+Process finished with exit code 0

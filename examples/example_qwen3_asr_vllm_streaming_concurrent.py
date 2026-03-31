@@ -34,7 +34,7 @@ SERVER_URL = "http://172.31.79.202:30000"
 LOCAL_WAV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "wav", "google_tts.wav")
 
 STEP_MS = 1000
-CONCURRENT_REQUESTS = 2
+CONCURRENT_REQUESTS = 10
 
 
 def _load_audio_bytes(path: str) -> bytes:
