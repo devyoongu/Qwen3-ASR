@@ -6,7 +6,9 @@
       "Bash(git rm:*)",
       "Bash(for n:*)",
       "Bash(do echo:*)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "Bash(python3 -c \"import sys; vals=[float\\(l.strip\\(\\).rstrip\\(''''s''''\\)\\) for l in sys.stdin]; print\\(f''''50개 avg={sum\\(vals\\)/len\\(vals\\):.1f}s, min={min\\(vals\\):.1f}s, max={max\\(vals\\):.1f}s, n={len\\(vals\\)}''''\\)\")",
+      "Bash(python3 -c \"import sys; vals=[float\\(l.strip\\(\\).rstrip\\(''''s''''\\)\\) for l in sys.stdin]; print\\(f''''100개 avg={sum\\(vals\\)/len\\(vals\\):.1f}s, min={min\\(vals\\):.1f}s, max={max\\(vals\\):.1f}s, n={len\\(vals\\)}''''\\)\")"
     ]
   }
 }

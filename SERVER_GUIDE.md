@@ -72,19 +72,19 @@ cd Qwen3-ASR
 
 ## 2. 서버 실행
 
-### 방법 A — Docker Compose (권장, 운영 환경)
+### 방법 A — docker-compose (권장, 운영 환경)
 
 컨테이너 내부에서 패키지를 자동 설치한 뒤 서버를 기동합니다.
 
 ```bash
 # 서버 시작 (백그라운드)
-docker compose up -d
+docker-compose up -d
 
 # 로그 확인
-docker compose logs -f
+docker-compose logs -f
 
 # 서버 중지
-docker compose down
+docker-compose down
 ```
 
 컨테이너 기동 시 다음 순서로 자동 실행됩니다:
@@ -146,16 +146,16 @@ qwen-asr-serve-async \
 
 ```bash
 # 1. 서버 중지
-docker compose down
+docker-compose down
 
 # 2. 최신 코드 받기
 git pull
 
 # 3. 서버 재시작
-docker compose up -d
+docker-compose up -d
 ```
 
-> Docker Compose는 시작 시 `pip install -e /app/src` 를 자동 실행하므로
+> docker-compose는 시작 시 `pip install -e /app/src` 를 자동 실행하므로
 > 컨테이너 이미지 재빌드 없이 코드 변경이 즉시 반영됩니다.
 
 ---
@@ -204,7 +204,7 @@ nvidia-smi \
 | 증상 | 원인 | 조치 |
 |------|------|------|
 | `Model loaded.` 가 출력되지 않음 | 모델 경로 오류 또는 VRAM 부족 | `--asr-model-path` 경로 확인, `nvidia-smi` 로 VRAM 여유 확인 |
-| `connection refused` | 서버 미기동 또는 포트 불일치 | `docker compose logs` 로 기동 오류 확인 |
+| `connection refused` | 서버 미기동 또는 포트 불일치 | `docker-compose logs` 로 기동 오류 확인 |
 | `invalid session_id` 오류 | 세션 TTL(10분) 초과 후 재사용 | `/api/start` 로 새 세션 생성 |
 | GPU Util이 낮고 응답이 느림 | 단일 세션만 요청 중 | 다중 세션 동시 요청 시 continuous batching 활성화됨 |
-| 컨테이너가 즉시 종료됨 | `pip install` 오류 | `docker compose logs` 확인, `--no-deps` 플래그 확인 |
+| 컨테이너가 즉시 종료됨 | `pip install` 오류 | `docker-compose logs` 확인, `--no-deps` 플래그 확인 |
