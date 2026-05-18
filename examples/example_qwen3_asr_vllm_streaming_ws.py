@@ -103,7 +103,7 @@ async def _recv_loop(ws, state: dict) -> None:
         pass
 
 
-async def run_streaming_case(wav16k: np.ndarray, step_ms: int, language: str = "ko") -> None:
+async def run_streaming_case(wav16k: np.ndarray, step_ms: int, language: str = "Korean") -> None:
     sr = 16000
     step = int(round(step_ms / 1000.0 * sr))
 
