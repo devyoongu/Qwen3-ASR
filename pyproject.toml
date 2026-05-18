@@ -38,6 +38,7 @@ vllm = [
   "vllm==0.14.0",
   "fastapi",
   "uvicorn[standard]",
+  "websockets",
 ]
 
 [project.urls]

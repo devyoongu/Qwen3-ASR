@@ -28,18 +28,48 @@ Run:
   qwen-asr-serve-async --asr-model-path <path> --host 0.0.0.0 --port 30000
 Open:
   http://0.0.0.0:30000
+
+Interfaces:
+
+  1) HTTP REST API (polling-style, session_id 기반)
+     - POST /api/start                             → {"session_id": "..."}
+     - POST /api/chunk?session_id=...  (octet-stream float32 PCM)
+                                                   → {"language": "...", "text": "..."}
+     - POST /api/finish?session_id=...             → final {"language", "text"}
+
+  2) WebSocket streaming API (server-pushed partial results)
+     - Endpoint:  ws://<host>:<port>/api/ws
+     - Frames:
+         Client → Server
+           [text JSON]  {"type":"config", "context":"...", "language":"...",
+                          "chunk_size_sec":1.0, "unfixed_chunk_num":4,
+                          "unfixed_token_num":5}                    # 첫 메시지 필수
+           [binary]     float32 LE PCM (16kHz, mono), len % 4 == 0  # 오디오 청크
+           [text JSON]  {"type":"end"}                              # flush + final + close
+         Server → Client
+           [text JSON]  {"type":"ready", "session_id":"...", "sample_rate":16000,
+                         "chunk_size_sec":..., "unfixed_chunk_num":...,
+                         "unfixed_token_num":...}
+           [text JSON]  {"type":"result", "is_final":false, "chunk_id":N,
+                         "language":"...", "text":"..."}            # 청크 처리될 때마다
+           [text JSON]  {"type":"result", "is_final":true, "chunk_id":N,
+                         "language":"...", "text":"..."}            # end 후
+           [text JSON]  {"type":"error", "code":"<string>",
+                         "message":"..."}                            # 잘못된 입력/내부 오류
+           [text JSON]  {"type":"closed", "reason":"end"|"error"}    # close 직전 마지막
 """
 
 import argparse
 import asyncio
+import json
 import time
 import uuid
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import numpy as np
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, JSONResponse
 
 # Register custom transformers config / model so AutoModel works.
@@ -323,6 +353,186 @@ async def api_finish(request: Request) -> JSONResponse:
     }
     SESSIONS.pop(session_id, None)
     return JSONResponse(out)
+
+
+# --------------------------------------------------------------------------- #
+# WebSocket streaming endpoint                                                 #
+# --------------------------------------------------------------------------- #
+
+async def _ws_send_json(ws: WebSocket, payload: Dict[str, Any]) -> None:
+    await ws.send_text(json.dumps(payload, ensure_ascii=False))
+
+
+async def _ws_send_error(ws: WebSocket, code: str, message: str) -> None:
+    await _ws_send_json(ws, {"type": "error", "code": code, "message": message})
+
+
+async def _ws_consume_buffered_chunks(ws: WebSocket, state: ASRStreamingState) -> None:
+    """Drain full chunks out of state.buffer, sending one interim result per chunk."""
+    while state.buffer.shape[0] >= state.chunk_size_samples:
+        chunk = state.buffer[: state.chunk_size_samples]
+        state.buffer = state.buffer[state.chunk_size_samples :]
+
+        if state.audio_accum.shape[0] == 0:
+            state.audio_accum = chunk
+        else:
+            state.audio_accum = np.concatenate([state.audio_accum, chunk], axis=0)
+
+        prefix = _build_chunk_prefix(state)
+        inp = {
+            "prompt": state.prompt_raw + prefix,
+            "multi_modal_data": {"audio": [state.audio_accum]},
+        }
+        gen_text = await _async_generate(inp)
+
+        state._raw_decoded = (prefix + gen_text) if prefix else gen_text
+        lang, txt = parse_asr_output(state._raw_decoded, user_language=state.force_language)
+        state.language = lang
+        state.text = txt
+        state.chunk_id += 1
+
+        await _ws_send_json(ws, {
+            "type": "result",
+            "is_final": False,
+            "chunk_id": state.chunk_id,
+            "language": state.language or "",
+            "text": state.text or "",
+        })
+
+
+async def _ws_flush_final(ws: WebSocket, state: ASRStreamingState) -> None:
+    """Mirror of /api/finish: flush remaining tail audio and send the final result."""
+    if state.buffer is not None and state.buffer.shape[0] > 0:
+        tail = state.buffer
+        state.buffer = np.zeros((0,), dtype=np.float32)
+
+        if state.audio_accum.shape[0] == 0:
+            state.audio_accum = tail
+        else:
+            state.audio_accum = np.concatenate([state.audio_accum, tail], axis=0)
+
+        prefix = _build_finish_prefix(state)
+        inp = {
+            "prompt": state.prompt_raw + prefix,
+            "multi_modal_data": {"audio": [state.audio_accum]},
+        }
+        gen_text = await _async_generate(inp)
+
+        state._raw_decoded = (prefix + gen_text) if prefix else gen_text
+        lang, txt = parse_asr_output(state._raw_decoded, user_language=state.force_language)
+        state.language = lang
+        state.text = txt
+        state.chunk_id += 1
+
+    await _ws_send_json(ws, {
+        "type": "result",
+        "is_final": True,
+        "chunk_id": state.chunk_id,
+        "language": state.language or "",
+        "text": state.text or "",
+    })
+
+
+@app.websocket("/api/ws")
+async def api_ws(ws: WebSocket) -> None:
+    """Streaming ASR over WebSocket. See module docstring for the wire protocol."""
+    await ws.accept()
+    session_id = uuid.uuid4().hex
+    state: Optional[ASRStreamingState] = None
+
+    try:
+        # ---- 1. config (first text frame) ------------------------------------
+        first = await ws.receive()
+        if first.get("type") == "websocket.disconnect":
+            return
+
+        first_text = first.get("text")
+        if first_text is None:
+            await _ws_send_error(ws, "invalid_config",
+                                 "first message must be a JSON text frame with type='config'")
+            await _ws_send_json(ws, {"type": "closed", "reason": "error"})
+            await ws.close()
+            return
+
+        try:
+            cfg = json.loads(first_text)
+            if not isinstance(cfg, dict) or cfg.get("type") != "config":
+                raise ValueError("first message must be JSON object with type='config'")
+            state = _init_streaming_state(
+                context=cfg.get("context") or "",
+                language=cfg.get("language"),
+                unfixed_chunk_num=int(cfg.get("unfixed_chunk_num", UNFIXED_CHUNK_NUM)),
+                unfixed_token_num=int(cfg.get("unfixed_token_num", UNFIXED_TOKEN_NUM)),
+                chunk_size_sec=float(cfg.get("chunk_size_sec", CHUNK_SIZE_SEC)),
+            )
+        except Exception as e:
+            await _ws_send_error(ws, "invalid_config", str(e))
+            await _ws_send_json(ws, {"type": "closed", "reason": "error"})
+            await ws.close()
+            return
+
+        await _ws_send_json(ws, {
+            "type": "ready",
+            "session_id": session_id,
+            "sample_rate": SAMPLE_RATE,
+            "chunk_size_sec": state.chunk_size_sec,
+            "unfixed_chunk_num": state.unfixed_chunk_num,
+            "unfixed_token_num": state.unfixed_token_num,
+        })
+
+        # ---- 2. audio (binary) / control (text) loop -------------------------
+        while True:
+            msg = await ws.receive()
+            if msg.get("type") == "websocket.disconnect":
+                return
+
+            raw_bytes = msg.get("bytes")
+            raw_text = msg.get("text")
+
+            if raw_bytes is not None:
+                if len(raw_bytes) % 4 != 0:
+                    await _ws_send_error(ws, "invalid_audio",
+                                         "float32 bytes length not multiple of 4")
+                    continue
+                if len(raw_bytes) == 0:
+                    continue
+                wav = np.frombuffer(raw_bytes, dtype=np.float32).reshape(-1)
+                if wav.shape[0] > 0:
+                    state.buffer = np.concatenate([state.buffer, wav], axis=0)
+                await _ws_consume_buffered_chunks(ws, state)
+
+            elif raw_text is not None:
+                try:
+                    payload = json.loads(raw_text)
+                except Exception as e:
+                    await _ws_send_error(ws, "invalid_message", f"not JSON: {e}")
+                    continue
+                if not isinstance(payload, dict):
+                    await _ws_send_error(ws, "invalid_message", "JSON must be an object")
+                    continue
+
+                ptype = payload.get("type")
+                if ptype == "end":
+                    await _ws_flush_final(ws, state)
+                    await _ws_send_json(ws, {"type": "closed", "reason": "end"})
+                    await ws.close()
+                    return
+                else:
+                    await _ws_send_error(ws, "invalid_message",
+                                         f"unknown type: {ptype!r}")
+            else:
+                # Neither bytes nor text — ignore.
+                continue
+
+    except WebSocketDisconnect:
+        return
+    except Exception as e:
+        try:
+            await _ws_send_error(ws, "internal_error", str(e))
+            await _ws_send_json(ws, {"type": "closed", "reason": "error"})
+            await ws.close()
+        except Exception:
+            pass
 
 
 # --------------------------------------------------------------------------- #

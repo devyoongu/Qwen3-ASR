@@ -131,14 +131,70 @@ qwen-asr-serve-async \
 
 ## 4. API 엔드포인트
 
-| 경로 | 메서드 | 설명 |
-|------|-------|------|
-| `GET /` | GET | 스트리밍 데모 UI |
-| `POST /api/start` | POST | 세션 생성, `{"session_id": "..."}` 반환 |
-| `POST /api/chunk?session_id=<id>` | POST | 오디오 청크 전송 (body: float32 PCM, 16kHz) |
-| `POST /api/finish?session_id=<id>` | POST | 스트리밍 종료 및 최종 결과 반환 |
+두 가지 인터페이스를 제공합니다.
+
+| 경로 | 프로토콜 | 설명 |
+|------|---------|------|
+| `GET /` | HTTP | 스트리밍 데모 UI |
+| `POST /api/start` | HTTP | 세션 생성, `{"session_id": "..."}` 반환 |
+| `POST /api/chunk?session_id=<id>` | HTTP | 오디오 청크 전송 (body: float32 PCM, 16kHz) |
+| `POST /api/finish?session_id=<id>` | HTTP | 스트리밍 종료 및 최종 결과 반환 |
+| `/api/ws` | **WebSocket** | 양방향 스트리밍 — 청크별 partial 결과를 서버가 푸시 |
 
 `/api/chunk` 요청 헤더: `Content-Type: application/octet-stream`
+
+---
+
+### 4-1. WebSocket 프로토콜 (`/api/ws`)
+
+OpenAI Realtime / Google StreamingRecognize 스타일의 양방향 스트리밍 인터페이스입니다.
+HTTP API와 달리 **연결 수명 = 세션 수명**이며 청크별 결과를 서버가 즉시 푸시하므로
+폴링이 필요 없습니다.
+
+#### 프레임 종류
+
+- **오디오** = WebSocket 바이너리 프레임 (float32 LE PCM, 16kHz, mono, 길이 % 4 == 0)
+- **제어/결과** = WebSocket 텍스트 프레임 (JSON)
+
+#### Client → Server
+
+| 순서 | 프레임 | 페이로드 | 비고 |
+|------|--------|---------|------|
+| 1 (필수) | text JSON | `{"type":"config", "context":"...", "language":"...", "chunk_size_sec":1.0, "unfixed_chunk_num":4, "unfixed_token_num":5}` | 첫 메시지. 모든 필드 optional — 누락 시 서버 CLI 기본값 사용 |
+| 2..N | binary | float32 PCM 임의 크기 | 서버가 `chunk_size_sec` 단위로 자동 분할 |
+| 마지막 | text JSON | `{"type":"end"}` | 잔여 버퍼 flush + final 결과 후 서버가 close |
+
+#### Server → Client
+
+| 이벤트 | 페이로드 | 시점 |
+|--------|---------|------|
+| `ready` | `{"type":"ready", "session_id":"...", "sample_rate":16000, "chunk_size_sec":..., "unfixed_chunk_num":..., "unfixed_token_num":...}` | config 검증 성공 직후 |
+| `result` (interim) | `{"type":"result", "is_final":false, "chunk_id":N, "language":"...", "text":"..."}` | 청크 1개 처리될 때마다 |
+| `result` (final) | `{"type":"result", "is_final":true, "chunk_id":N, "language":"...", "text":"..."}` | `end` 처리 후 |
+| `error` | `{"type":"error", "code":"...", "message":"..."}` | 잘못된 입력 또는 내부 오류. `code` ∈ {`invalid_config`, `invalid_audio`, `invalid_message`, `internal_error`} |
+| `closed` | `{"type":"closed", "reason":"end"\|"error"}` | WebSocket close 직전 마지막 메시지 |
+
+#### 흐름 예시
+
+```
+C → S [text]   {"type":"config","language":"ko"}
+S → C [text]   {"type":"ready","session_id":"...","sample_rate":16000,...}
+C → S [bin]    <16000×4B float32 PCM>
+S → C [text]   {"type":"result","is_final":false,"chunk_id":1,"language":"한국어","text":"안녕"}
+C → S [bin]    <16000×4B float32 PCM>
+S → C [text]   {"type":"result","is_final":false,"chunk_id":2,"language":"한국어","text":"안녕하세요"}
+C → S [text]   {"type":"end"}
+S → C [text]   {"type":"result","is_final":true,"chunk_id":N,"language":"한국어","text":"안녕하세요 반갑습니다"}
+S → C [text]   {"type":"closed","reason":"end"}
+[WebSocket close]
+```
+
+#### 동작 특성
+
+- VAD/자동 종료 없음 — 클라이언트가 `end`를 명시적으로 보낼 때만 종료
+- 락 없음 — 한 연결의 메시지는 단일 코루틴에서 순차 처리. 여러 WebSocket 연결의 `engine.generate()`는 vLLM continuous batching이 동시 묶음 (HTTP `/api/chunk` 다중 세션과 동일한 동시성 모델)
+- 세션 TTL/GC 없음 — 연결 종료 시 자동으로 정리됨 (HTTP API의 10분 TTL과 무관)
+- `invalid_audio` / `invalid_message`는 연결을 끊지 않고 에러 이벤트만 보냄. `invalid_config` / `internal_error`는 close
 
 ---
 
@@ -172,11 +228,33 @@ curl http://localhost:30000/api/start -X POST
 ### 클라이언트 예제 실행 (로컬 PC에서)
 
 ```bash
-# 단일 세션
+# 단일 세션 (HTTP API)
 python examples/example_qwen3_asr_vllm_streaming.py
 
 # 동시 N 세션 (스크립트 내 CONCURRENT_REQUESTS 변수 조정)
 python examples/example_qwen3_asr_vllm_streaming_concurrent.py
+
+# WebSocket 스트리밍 (양방향, partial 결과를 서버가 푸시)
+pip install websockets
+python examples/example_qwen3_asr_vllm_streaming_ws.py
+```
+
+### WebSocket 빠른 테스트 (`websocat`)
+
+```bash
+# 1. websocat 설치 (macOS)
+brew install websocat
+
+# 2. 연결 후 config 전송 → ready 수신
+websocat ws://172.31.79.202:30000/api/ws
+> {"type":"config","language":"ko"}
+< {"type":"ready","session_id":"...","sample_rate":16000,...}
+
+# 3. 종료 (오디오는 binary frame이라 websocat 대화모드로는 보내기 어려우니
+#    실제 오디오 전송은 example_qwen3_asr_vllm_streaming_ws.py 사용)
+> {"type":"end"}
+< {"type":"result","is_final":true,...}
+< {"type":"closed","reason":"end"}
 ```
 
 ---
@@ -208,3 +286,7 @@ nvidia-smi \
 | `invalid session_id` 오류 | 세션 TTL(10분) 초과 후 재사용 | `/api/start` 로 새 세션 생성 |
 | GPU Util이 낮고 응답이 느림 | 단일 세션만 요청 중 | 다중 세션 동시 요청 시 continuous batching 활성화됨 |
 | 컨테이너가 즉시 종료됨 | `pip install` 오류 | `docker-compose logs` 확인, `--no-deps` 플래그 확인 |
+| WS 연결 직후 `invalid_config` 후 close | 첫 메시지가 바이너리이거나 `type != "config"` | 첫 메시지로 반드시 `{"type":"config", ...}` 텍스트 JSON 전송 |
+| WS `invalid_audio` 이벤트 반복 | 바이너리 길이가 4의 배수가 아님 (float32가 아님) | 클라이언트에서 `np.float32` 로 캐스팅 후 `tobytes()` 사용 |
+| WS `recv()` 가 멈춤 | `end` 미전송 또는 서버측 처리 지연 | 마지막에 반드시 `{"type":"end"}` 송신, 또는 `closed` 이벤트 수신까지 대기 |
+| `ModuleNotFoundError: websockets` | 예시 클라이언트 의존성 누락 | 클라이언트 PC에서 `pip install websockets` (서버는 `uvicorn[standard]`로 이미 포함) |
