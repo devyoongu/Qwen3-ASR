@@ -36,7 +36,9 @@ import websockets
 
 
 SERVER = "ws://172.31.79.202:30000/api/ws"
-WAV_DIR = "wav/sequential"
+# 스크립트 위치 기준으로 프로젝트 루트의 wav/sequential 을 찾는다 (CWD 무관)
+_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+WAV_DIR = os.path.join(_PROJECT_ROOT, "wav", "sequential")
 STEP_MS = 200
 LANGUAGE = "Korean"
 INDEX_RANGE = range(1, 11)  # 001 ~ 010
